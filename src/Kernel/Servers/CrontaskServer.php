@@ -138,7 +138,7 @@ class CrontaskServer extends Worker implements Servers
     protected function registerTimer()
     {
         Timer::add(60, [$this, 'getCrontasks']);
-        Timer::add(1, [$this, 'doCrontable']);
+        Timer::add(1, [$this, 'doCrontasks']);
     }
 
     public function getCrontasks($loadFlie = false)
@@ -262,7 +262,7 @@ class CrontaskServer extends Worker implements Servers
         );
     }
 
-    public function doCrontable()
+    public function doCrontasks()
     {
         $tasks = TickTable::getTask();
         if (empty($tasks)) {
