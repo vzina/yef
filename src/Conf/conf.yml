@@ -1,0 +1,105 @@
+# 全局配置
+Globals:
+    Environment: Develop # 环境配置名称
+    Name: annual
+    Debug: true
+
+    # 异步任务
+    TaskClientAddress: '127.0.0.1:8882'
+
+    # redis 配置
+    DefaultRedisHost: '127.0.0.1'
+    DefaultRedisPort: 6379
+    DefaultRedisAuth: ''
+    DefaultRedisDb: 0
+
+    # memcached 配置
+    DefaultMemcachedServers:
+        -   # 配置1
+            - '127.0.0.1'
+            - 11211
+
+    # cache 配置
+    CacheNamespace: Annual
+    CacheLifetime: 3600
+    # redis或memcached配置前缀
+    CacheDriveConfName: Default
+
+    ServerList:
+        - Annual\Kernel\Servers\CrontaskServer
+        - Annual\Kernel\Servers\FileMonitorServer
+        - Annual\Kernel\Servers\SocketIOServer:
+            name: SocketIO
+            address: 127.0.0.1:8880
+            httpEnable: true
+            httpAddress: 127.0.0.1:8881
+            user: ''
+            group: ''
+            origins: ''
+        - Annual\Kernel\Servers\TaskServer:
+            name: SocketIO-Task
+            address: 127.0.0.1:8882
+            workerNum: 2
+            user: ''
+            group: ''
+            origins: ''
+    # 事件监听器
+    Listeners:
+        -
+        # - Annual\App\Listeners\AuthListener
+# 环境配置
+Develop:
+    # 定时任务配置
+    # TimerList:
+        #- '秒': 继承TaskTimer的子类名
+    # 数据库配置
+    DefaultMysqlHost: '127.0.0.1'
+    DefaultMysqlPort: 3306
+    DefaultMysqlUser: 'root'
+    DefaultMysqlPass: 'root'
+    DefaultMysqlName: 'wedding'
+    DefaultMysqlCharset: 'utf8'
+
+    WechatConf:
+        # 账号基本信息，请从微信公众平台/开放平台获取
+        app_id: your-app-id # AppID
+        secret: your-app-secret # AppSecret
+        token: your-token # Token
+        aes_key: '' # EncodingAESKey，兼容与安全模式下请一定要填写！！！
+
+        # 指定 API 调用返回结果的类型：array(default)/collection/object/raw/自定义类名
+        # 使用自定义类名时，构造函数将会接收一个 `EasyWeChat\Kernel\Http\Response` 实例
+        #
+        response_type: 'array'
+
+        # 日志配置
+        # level: 日志级别, 可选为：
+        #         debug/info/notice/warning/error/critical/alert/emergency
+        # path：日志文件位置(绝对路径!!!)，要求可写权限
+        log:
+            default: dev # 默认使用的 channel，生产环境可以改为下面的 prod
+            channels:
+                # 测试环境
+                dev:
+                    driver: 'daily'
+                    path: /Users/yeweijian/Public/data/php/jobs/sourcetree/other/backend/Annual-event/server/src/Runtime/logs/wx.log
+                    level: 'debug'
+                    day: 7
+        # 接口请求相关配置，超时时间等，具体可用参数请参考：
+        # http://docs.guzzlephp.org/en/stable/request-config.html
+        # - retries: 重试次数，默认 1，指定当 http 请求失败时重试的次数。
+        # - retry_delay: 重试延迟间隔（单位：ms），默认 500
+        # - log_template: 指定 HTTP 日志模板，请参考：https://github.com/guzzle/guzzle/blob/master/src/MessageFormatter.php
+        http:
+            max_retries: 1
+            retry_delay: 500
+            timeout: 5.0
+            # 'base_uri' => 'https://api.weixin.qq.com/', # 如果你在国外想要覆盖默认的 url 的时候才使用，根据不同的模块配置不同的 uri
+
+        #OAuth 配置
+        # scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
+        # callback：OAuth授权完成后的回调页地址
+        oauth:
+            scopes:
+                - 'snsapi_userinfo'
+            callback: '/examples/oauth_callback.php'
